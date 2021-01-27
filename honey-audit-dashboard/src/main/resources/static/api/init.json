@@ -1,0 +1,57 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "static/page/welcome-3.html?t=1"
+  },
+  "logoInfo": {
+    "title": "Honey Audit",
+    "image": "http://oss.honey.red/public/honey.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "审计查询",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+
+
+        {
+          "title": "表格示例",
+          "href": "static/page/table.html",
+          "icon": "fa fa-snowflake-o",
+          "target": "_self"
+        },
+        {
+          "title": "表单示例",
+          "href": "static/page/table.html",
+          "icon": "fa fa-calendar",
+          "target": "_self"
+
+        },
+        {
+          "title": "登录模板",
+          "href": "static/page/table.html",
+          "icon": "fa fa-flag-o",
+          "target": "_self"
+
+        },
+        {
+          "title": "异常页面",
+          "href": "static/page/table.html",
+          "icon": "fa fa-home",
+          "target": "_self"
+
+        },
+        {
+          "title": "其它界面",
+          "href": "static/page/table.html",
+          "icon": "fa fa-snowflake-o",
+          "target": ""
+
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: honey-audit-server
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://49.235.39.179:3305/honey_audit?useUnicode=true&useSSL=false&useJDBCCompliantTimezoneShift=true&serverTimezone=UTC&characterEncoding=utf8
+    username: root
+    password: yangzhijie@cvte.com
+
+  cloud:
+    zookeeper:
+      discovery:
+        register: true
+      connect-string: 49.235.208.98:2181
+
+dubbo:
+  scan:
+    base-packages: red.honey.audit.server
+  registry:
+    protocol: zookeeper
+    address: zookeeper://49.235.208.98:2181
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20881
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:/META-INF/mapper/*.xml
+pagehelper:
+  helper-dialect: mysql
+  reasonable: false
+  support-methods-arguments: true
+  page-size-zero: false
+  params: count=countSql

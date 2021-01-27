@@ -1,0 +1,21 @@
+dubbo:
+  cloud:
+    subscribed-services: honey-audit-server
+  scan:
+    base-packages: red.honey.audit.core
+  registry:
+    protocol: zookeeper
+    address: zookeeper://49.235.208.98:2181
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20881
+
+spring:
+  application:
+    name: honey-audit.core
+  cloud:
+    zookeeper:
+      discovery:
+        register: false
+      connect-string: 49.235.208.98:2181

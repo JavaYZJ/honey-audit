@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="red.honey.audit.server.application.mapper.AuditMapper">
+
+
+    <sql id="baseSqlField">  uid, operator_id, operator_name, operator_ip, operation_type, operation_method, operation_parameters, operation_details, create_time</sql>
+
+    <insert id="addAuditLogs">
+        insert into t_audit(uid, operator_id, operator_name, operator_ip, operation_type, operation_method,
+                            operation_parameters, operation_details, app_id)
+        VALUES (#{operation.uid}, #{operation.operatorId}, #{operation.operatorName}, #{operation.operatorIp},
+                #{operation.operationType}, #{operation.operationMethod}, #{operation.operationParameters},
+                #{operation.operationDetails}, #{operation.appId})
+    </insert>
+    <update id="deleteAuditLogs">
+        update t_audit set is_deleted = 1
+        where uid in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and app_id = #{appId} and is_deleted = 0
+    </update>
+    <select id="queryAuditLogs" resultType="red.honey.audit.common.pojo.Operation">
+        select
+        <include refid="baseSqlField"/>
+        from t_audit
+        <where>
+            <if test="queryDto.operatorId != null and queryDto.operatorId != ''">
+                operator_id = #{queryDto.operatorId}
+            </if>
+            <if test="queryDto.operatorName != null and queryDto.operatorName != ''">
+                and operator_name = #{queryDto.operatorName}
+            </if>
+            <if test="queryDto.operatorIp != null and queryDto.operatorIp != ''">
+                and operator_ip = #{queryDto.operatorIp}
+            </if>
+            <if test="queryDto.operationType != null">
+                and operation_type = #{queryDto.operationType}
+            </if>
+            <if test="queryDto.startTime != null and queryDto.endTime != null">
+                and create_time between #{queryDto.startTime} and #{queryDto.endTime}
+            </if>
+            and app_id = #{queryDto.appId} and is_deleted = 0
+        </where>
+    </select>
+    <select id="getApps" resultType="java.lang.String">
+        select app_id
+        from honey_audit.t_audit
+        where is_deleted = 0
+        group by app_id
+    </select>
+</mapper>

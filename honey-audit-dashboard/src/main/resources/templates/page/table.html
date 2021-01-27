@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Honey Audit</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend id="appId"></legend>
+          <!--  <fieldset class="table-search-fieldset">
+                <legend>搜索信息</legend>
+                <div style="margin: 10px 10px 10px 10px">
+                    <form id="form" class="layui-form layui-form-pane">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">操作者ID</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="operatorId" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">操作者</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="operatorName" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">操作者IP</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="operatorIp" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">操作类型</label>
+                                <div class="layui-input-inline">
+                                    <select name="operationMethod" class="layui-select">
+                                        <option value=0>ADD新增</option>
+                                        <option value=1>UPDATE更新</option>
+                                        <option value=2>VIEW查询</option>
+                                        <option value=3>REMOVE删除</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button onclick="search()" type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                        lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>-->
+
+
+            <table  class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+            <table  class="layui-hide" id="currentTableId1" lay-filter="currentTableFilter"></table>
+        </fieldset>
+    </div>
+</div>
+<script src="../../static/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../static/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+
+<script th:inline="none">
+
+    $(function () {
+        var appId = getUrlQueryString('appId');
+        $('#appId').text(appId);
+        if (appId != null) {
+            layui.use('table', function () {
+                var table = layui.table;
+                table.render({
+                    elem: '#currentTableId'
+                    , url: '/v1/audit/query?appId=' + appId
+                    , limit: 10
+                    , method: 'POST'
+                    , page: true //开启分页
+                    , cols: [[ //表头
+                        {field: 'operatorId', title: '操作者ID', width: 180, fixed: 'left'}
+                        , {field: 'operatorName', title: '操作者', width: 140}
+                        , {field: 'operatorIp', title: '操作者IP', width: 140}
+                        , {field: 'operationType', title: '操作类型', width: 100}
+                        , {field: 'operationMethod', title: '操作方法', width: 300}
+                        , {field: 'operationParameters', title: '方法参数', width: 300}
+                        , {field: 'operationDetails', title: '操作结果', width: 300}
+                        , {field: 'createTime', title: '操作时间', width: 180}
+                    ]]
+                });
+
+            });
+        }
+    });
+
+
+    function search() {
+        var appId = $('#appId').text();
+        var operatorId = $("#form input[name=operatorId]").val();
+        var operatorName = $("#form input[name=operatorName]").val();
+        var operatorIp = $("#form input[name=operatorIp]").val();
+        var operationType = $("#form select option:checked").val();
+        layui.use('table', function () {
+            var table = layui.table;
+            let options = {
+                elem: '#currentTableId',
+                url: '/v1/audit/query?appId=' + appId +
+                    '&operatorId=' + operatorId + '&operatorName=' + operatorName + '&operatorIp=' + operatorIp + '&operationType=' + operationType,
+                limit: 10,
+                method: 'POST',
+                page: true,
+                cols: [[
+                    {field: 'operatorId', title: '操作者ID', width: 180, fixed: 'left'}
+                    , {field: 'operatorName', title: '操作者', width: 140}
+                    , {field: 'operatorIp', title: '操作者IP', width: 140}
+                    , {field: 'operationType', title: '操作类型', width: 100}
+                    , {field: 'operationMethod', title: '操作方法', width: 300}
+                    , {field: 'operationParameters', title: '方法参数', width: 300}
+                    , {field: 'operationDetails', title: '操作结果', width: 300}
+                    , {field: 'createTime', title: '操作时间', width: 180}
+                ]]
+            };
+            var tableIns = table.render();
+            tableIns.reload(options)
+        });
+        /*$.ajax({
+            url: '/v1/audit/query?appId=' + appId,
+            type: 'POST',
+            dataType: "JSON",
+            data: $('#form').serialize(),
+            success: function (result) {
+                alert(result)
+            }
+        });*/
+    }
+
+    function getUrlQueryString(names, urls) {
+        urls = urls || window.location.href;
+        urls && urls.indexOf("?") > -1 ? urls = urls
+            .substring(urls.indexOf("?") + 1) : "";
+        var reg = new RegExp("(^|&)" + names + "=([^&]*)(&|$)", "i");
+        var r = urls ? urls.match(reg) : window.location.search.substr(1)
+            .match(reg);
+        if (r != null && r[2] !== "")
+            return unescape(r[2]);
+        return null;
+    }
+
+
+</script>
+
+</body>
+</html>
